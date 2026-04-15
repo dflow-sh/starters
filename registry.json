@@ -67,6 +67,37 @@
       }
     },
     {
+      "id": "frontend/angular",
+      "path": "starters/frontend/angular",
+      "manifestPath": "starters/frontend/angular/dflow.template.json",
+      "manifest": {
+        "schemaVersion": "1",
+        "id": "frontend/angular",
+        "displayName": "Angular",
+        "category": "frontend",
+        "language": "TypeScript",
+        "framework": "Angular",
+        "runtime": "node",
+        "installCommand": "npm ci",
+        "buildCommand": "npm run build",
+        "startCommand": "npm run preview",
+        "port": 4173,
+        "healthCheck": {
+          "type": "http",
+          "path": "/",
+          "expectedStatus": 200
+        },
+        "outputs": {
+          "staticDir": "dist/angular/browser"
+        },
+        "tags": [
+          "angular",
+          "spa"
+        ],
+        "support": "official"
+      }
+    },
+    {
       "id": "frontend/react-vite",
       "path": "starters/frontend/react-vite",
       "manifestPath": "starters/frontend/react-vite/dflow.template.json",

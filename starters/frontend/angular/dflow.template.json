@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1",
+  "id": "frontend/angular",
+  "displayName": "Angular",
+  "category": "frontend",
+  "language": "TypeScript",
+  "framework": "Angular",
+  "runtime": "node",
+  "installCommand": "npm ci",
+  "buildCommand": "npm run build",
+  "startCommand": "npm run preview",
+  "port": 4173,
+  "healthCheck": {
+    "type": "http",
+    "path": "/",
+    "expectedStatus": 200
+  },
+  "outputs": {
+    "staticDir": "dist/angular/browser"
+  },
+  "tags": ["angular", "spa"],
+  "support": "official"
+}

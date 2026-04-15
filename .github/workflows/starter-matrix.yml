@@ -1,6 +1,7 @@
 # Job B — install + build + optional HTTP smoke per Phase 1 starter (manifest healthCheck)
 # https://app.clickup.com/t/86d2nff0v — matrix: epic Phase 1 starters
 # https://app.clickup.com/t/86d2nfce8
+# Phase D expansion: https://app.clickup.com/t/86d2nfe4g
 name: Starter matrix (Phase 1)
 
 on:
@@ -46,6 +47,16 @@ jobs:
             build_command: npm run build
             smoke_port: "4173"
             smoke_path: /
+          # https://app.clickup.com/t/86d2nff5x
+          - id: frontend/angular
+            path: starters/frontend/angular
+            runtime: node
+            npm_key_file: starters/frontend/angular/package.json
+            install_command: npm ci
+            build_command: npm run build
+            smoke_port: "4173"
+            smoke_path: /
+            node_smoke_cmd: "npx serve dist/angular/browser -l tcp://127.0.0.1:$SMOKE_PORT"
           - id: backend/python-fastapi
             path: starters/backend/python-fastapi
             runtime: python
@@ -84,6 +95,15 @@ jobs:
           key: ${{ runner.os }}-node-${{ matrix.id }}-${{ hashFiles(matrix.npm_key_file) }}
           restore-keys: |
             ${{ runner.os }}-node-${{ matrix.id }}-
+
+      - name: Cache Angular CLI cache
+        if: matrix.id == 'frontend/angular'
+        uses: actions/cache@v4
+        with:
+          path: ${{ matrix.path }}/.angular/cache
+          key: ${{ runner.os }}-angular-${{ hashFiles('starters/frontend/angular/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-angular-
 
       - name: Set up Python
         if: matrix.runtime == 'python'
@@ -131,7 +151,11 @@ jobs:
           set -euo pipefail
           case "${{ matrix.runtime }}" in
             node)
-              npm run preview -- --host 127.0.0.1 --port "${SMOKE_PORT}" &
+              if [ -n "${{ matrix.node_smoke_cmd }}" ]; then
+                ${{ matrix.node_smoke_cmd }} &
+              else
+                npm run preview -- --host 127.0.0.1 --port "${SMOKE_PORT}" &
+              fi
               pid=$!
               ;;
             python)
