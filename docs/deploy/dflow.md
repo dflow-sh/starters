@@ -53,3 +53,4 @@ Ports, health paths, static **`outputs.staticDir`**, and **`outputs.serverBuildD
 
 - [Repository architecture](../architecture.md) — layout and naming
 - [Root README](../../README.md) — scaffold CLI, support tiers, quick links
+- [Product smoke deploy runbook](../product/smoke-deploy-runbook.md) — Phase 1 smoke cohort, tag pinning, rollback, and `registry.json` URLs for app.dflow.sh

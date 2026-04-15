@@ -47,7 +47,7 @@ We use `starters/` instead of `apps/` so this repo stays distinct from productio
 
 ## Support tiers
 
-- **Official** — Maintained by the dFlow team; covered by CI (install / build / smoke start where applicable) and periodic deploy checks. Intended for production-style samples.
+- **Official** — Maintained by the dFlow team; covered by CI (install / build / smoke start where applicable) and the [product smoke workflow](.github/workflows/dflow-product-smoke.yml) / [runbook](docs/product/smoke-deploy-runbook.md) for app.dflow.sh. Intended for production-style samples.
 - **Community** — Contributed patterns, **best-effort** review and maintenance. Use with judgment; prefer official starters for critical paths.
 
 ## How to scaffold

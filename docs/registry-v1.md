@@ -32,6 +32,17 @@ Every `id` must appear at most once in `starters`. The generator fails (exit cod
 
 With current path rules (`id` must match the directory), duplicate ids are unlikely in practice, but the check is required so the catalog stays unambiguous if layout or validation rules change.
 
+## Canonical published URLs
+
+For **product** and **CLI** consumption, fetch `registry.json` over HTTPS (pin a `starters/v*` tag in production):
+
+| Ref | URL |
+| --- | --- |
+| `main` | `https://raw.githubusercontent.com/dflow-sh/starters/main/registry.json` |
+| Tag `starters/v0.1.0` (example) | `https://raw.githubusercontent.com/dflow-sh/starters/starters/v0.1.0/registry.json` |
+
+Operational detail (smoke cadence, rollback, alerting): [docs/product/smoke-deploy-runbook.md](./product/smoke-deploy-runbook.md).
+
 ## Related docs
 
 - Per-template contract: [manifest-v1.md](./manifest-v1.md)
