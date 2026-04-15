@@ -99,6 +99,10 @@ jobs:
         if: matrix.runtime == 'python'
         run: ${{ matrix.install_command }}
 
+      - name: Verify (Python import)
+        if: matrix.runtime == 'python'
+        run: python3 -c "import main; assert getattr(main, 'app', None) is not None"
+
       - name: Install (Java)
         if: matrix.runtime == 'java'
         run: |

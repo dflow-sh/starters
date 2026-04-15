@@ -51,6 +51,13 @@
           "path": "/health",
           "expectedStatus": 200
         },
+        "env": [
+          {
+            "name": "PORT",
+            "required": false,
+            "description": "HTTP listen port when you override the default (manifest default: 8000)."
+          }
+        ],
         "tags": [
           "python",
           "api",
