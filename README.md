@@ -14,6 +14,7 @@ starters/
   backend/
     python-fastapi/
     java-springboot/
+    go-gin/
   fullstack/
     nextjs/
 packages/
@@ -50,7 +51,7 @@ We use `starters/` instead of `apps/` so this repo stays distinct from productio
 
 **Today:** clone this repository if you are contributing or inspecting templates. Copy the starter directory you need into your own project and follow that template’s `README` once published.
 
-**Scaffold:** run `pnpm exec create-dflow-app` from this repo (after `pnpm install`), or use `pnpm dlx` once the package is published. Examples and flags: [packages/create-dflow-app/README.md](./packages/create-dflow-app/README.md). Maintainer verification: `pnpm run verify:create-dflow-app` (requires JDK 17+, Python 3, and npm for the Phase 1 matrix).
+**Scaffold:** run `pnpm exec create-dflow-app` from this repo (after `pnpm install`), or use `pnpm dlx` once the package is published. Examples and flags: [packages/create-dflow-app/README.md](./packages/create-dflow-app/README.md). Maintainer verification: `pnpm run verify:create-dflow-app` (requires JDK 17+, Go 1.22+, Python 3, and npm for the starter matrix).
 
 **Deploy:** each starter ships a `dflow.template.json` manifest at its root. Spec and JSON Schema: [docs/manifest-v1.md](./docs/manifest-v1.md). Validate locally with `pnpm install` and `pnpm run validate:manifests`. Deploy through the dFlow app using your Git provider integration ([GitHub integration overview](https://docs.dflow.sh/articles/7377791-github-integration)).
 

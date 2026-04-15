@@ -25,6 +25,7 @@ create-dflow-app list
 ```bash
 create-dflow-app frontend/react-vite ./my-app
 create-dflow-app frontend/vue-vite ./my-vue-app
+create-dflow-app backend/go-gin ./api-go
 ```
 
 **Local monorepo** (while developing templates):
@@ -79,6 +80,7 @@ This runs `create-dflow-app` for **each** catalog entry, then runs `installComma
 - **Node + npm** (e.g. `frontend/react-vite`)
 - **Python 3 + pip** (`backend/python-fastapi`)
 - **JDK 17+** on `PATH` (`backend/java-springboot` uses the Maven Wrapper `./mvnw`; Java is still required)
+- **Go 1.22+** on `PATH` (`backend/go-gin`)
 
 ## References
 

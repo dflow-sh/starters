@@ -4,6 +4,7 @@ import path from "node:path";
 const IGNORE_NAMES = new Set([
   "node_modules",
   ".git",
+  "bin",
   "dist",
   "build",
   "target",

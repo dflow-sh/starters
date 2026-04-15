@@ -21,6 +21,7 @@ env:
   PYTHON_VERSION: "3.12"
   JAVA_VERSION: "17"
   JAVA_DISTRIBUTION: temurin
+  GO_VERSION: "1.22"
 
 jobs:
   build:
@@ -72,6 +73,14 @@ jobs:
             build_command: ./mvnw -B -q package -DskipTests
             smoke_port: "8080"
             smoke_path: /health
+          # https://app.clickup.com/t/86d2nff5u
+          - id: backend/go-gin
+            path: starters/backend/go-gin
+            runtime: go
+            install_command: go mod download
+            build_command: go build -o bin/server .
+            smoke_port: "8080"
+            smoke_path: /health
 
     defaults:
       run:
@@ -121,6 +130,13 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           cache: maven
 
+      - name: Set up Go
+        if: matrix.runtime == 'go'
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache-dependency-path: ${{ matrix.path }}/go.sum
+
       - name: Install (Node)
         if: matrix.runtime == 'node'
         run: ${{ matrix.install_command }}
@@ -138,6 +154,20 @@ jobs:
         run: |
           chmod +x mvnw
           ${{ matrix.install_command }}
+
+      - name: Install (Go)
+        if: matrix.runtime == 'go'
+        env:
+          CGO_ENABLED: "0"
+        run: ${{ matrix.install_command }}
+
+      - name: Test and vet (Go)
+        if: matrix.runtime == 'go'
+        env:
+          CGO_ENABLED: "0"
+        run: |
+          go test ./...
+          go vet ./...
 
       - name: Build
         if: matrix.build_command != ''
@@ -164,6 +194,10 @@ jobs:
               ;;
             java)
               java -jar target/app.jar &
+              pid=$!
+              ;;
+            go)
+              CGO_ENABLED=0 ./bin/server &
               pid=$!
               ;;
             *)

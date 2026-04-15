@@ -2,6 +2,42 @@
   "registryVersion": "1",
   "starters": [
     {
+      "id": "backend/go-gin",
+      "path": "starters/backend/go-gin",
+      "manifestPath": "starters/backend/go-gin/dflow.template.json",
+      "manifest": {
+        "schemaVersion": "1",
+        "id": "backend/go-gin",
+        "displayName": "Go (Gin)",
+        "category": "backend",
+        "language": "Go",
+        "framework": "Gin",
+        "runtime": "go",
+        "installCommand": "go mod download",
+        "buildCommand": "go build -o bin/server .",
+        "startCommand": "./bin/server",
+        "port": 8080,
+        "healthCheck": {
+          "type": "http",
+          "path": "/health",
+          "expectedStatus": 200
+        },
+        "env": [
+          {
+            "name": "PORT",
+            "required": false,
+            "description": "HTTP listen port when you override the default (manifest default: 8080)."
+          }
+        ],
+        "tags": [
+          "go",
+          "gin",
+          "api"
+        ],
+        "support": "official"
+      }
+    },
+    {
       "id": "backend/java-springboot",
       "path": "starters/backend/java-springboot",
       "manifestPath": "starters/backend/java-springboot/dflow.template.json",
