@@ -1,4 +1,95 @@
 {
   "registryVersion": "1",
-  "starters": []
+  "starters": [
+    {
+      "id": "backend/java-springboot",
+      "path": "starters/backend/java-springboot",
+      "manifestPath": "starters/backend/java-springboot/dflow.template.json",
+      "manifest": {
+        "schemaVersion": "1",
+        "id": "backend/java-springboot",
+        "displayName": "Java (Spring Boot)",
+        "category": "backend",
+        "language": "Java",
+        "framework": "Spring Boot",
+        "runtime": "jvm",
+        "installCommand": "./mvnw -B -q dependency:resolve",
+        "buildCommand": "./mvnw -B -q package -DskipTests",
+        "startCommand": "java -jar target/app.jar",
+        "port": 8080,
+        "healthCheck": {
+          "type": "http",
+          "path": "/health",
+          "expectedStatus": 200
+        },
+        "tags": [
+          "java",
+          "spring",
+          "api"
+        ],
+        "support": "official"
+      }
+    },
+    {
+      "id": "backend/python-fastapi",
+      "path": "starters/backend/python-fastapi",
+      "manifestPath": "starters/backend/python-fastapi/dflow.template.json",
+      "manifest": {
+        "schemaVersion": "1",
+        "id": "backend/python-fastapi",
+        "displayName": "Python FastAPI",
+        "category": "backend",
+        "language": "Python",
+        "framework": "FastAPI",
+        "runtime": "python",
+        "installCommand": "python3 -m pip install -r requirements.txt",
+        "buildCommand": "",
+        "startCommand": "python3 -m uvicorn main:app --host 0.0.0.0 --port 8000",
+        "port": 8000,
+        "healthCheck": {
+          "type": "http",
+          "path": "/health",
+          "expectedStatus": 200
+        },
+        "tags": [
+          "python",
+          "api",
+          "fastapi"
+        ],
+        "support": "official"
+      }
+    },
+    {
+      "id": "frontend/react-vite",
+      "path": "starters/frontend/react-vite",
+      "manifestPath": "starters/frontend/react-vite/dflow.template.json",
+      "manifest": {
+        "schemaVersion": "1",
+        "id": "frontend/react-vite",
+        "displayName": "React (Vite)",
+        "category": "frontend",
+        "language": "TypeScript",
+        "framework": "Vite",
+        "runtime": "node",
+        "installCommand": "npm install",
+        "buildCommand": "npm run build",
+        "startCommand": "npm run preview -- --host 0.0.0.0 --port 4173",
+        "port": 4173,
+        "healthCheck": {
+          "type": "http",
+          "path": "/",
+          "expectedStatus": 200
+        },
+        "outputs": {
+          "staticDir": "dist"
+        },
+        "tags": [
+          "react",
+          "vite",
+          "spa"
+        ],
+        "support": "official"
+      }
+    }
+  ]
 }

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1",
+  "id": "backend/java-springboot",
+  "displayName": "Java (Spring Boot)",
+  "category": "backend",
+  "language": "Java",
+  "framework": "Spring Boot",
+  "runtime": "jvm",
+  "installCommand": "./mvnw -B -q dependency:resolve",
+  "buildCommand": "./mvnw -B -q package -DskipTests",
+  "startCommand": "java -jar target/app.jar",
+  "port": 8080,
+  "healthCheck": {
+    "type": "http",
+    "path": "/health",
+    "expectedStatus": 200
+  },
+  "tags": ["java", "spring", "api"],
+  "support": "official"
+}

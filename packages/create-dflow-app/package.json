@@ -1,0 +1,19 @@
+{
+  "name": "@dflow-starters/create-dflow-app",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Bootstrap a dFlow starter template into a new directory (interactive or non-interactive).",
+  "bin": {
+    "create-dflow-app": "./bin/create-dflow-app.mjs"
+  },
+  "scripts": {
+    "verify": "node ./scripts/verify-starters.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "degit": "^2.8.4"
+  }
+}

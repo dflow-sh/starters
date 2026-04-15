@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1",
+  "id": "frontend/react-vite",
+  "displayName": "React (Vite)",
+  "category": "frontend",
+  "language": "TypeScript",
+  "framework": "Vite",
+  "runtime": "node",
+  "installCommand": "npm install",
+  "buildCommand": "npm run build",
+  "startCommand": "npm run preview -- --host 0.0.0.0 --port 4173",
+  "port": 4173,
+  "healthCheck": {
+    "type": "http",
+    "path": "/",
+    "expectedStatus": 200
+  },
+  "outputs": {
+    "staticDir": "dist"
+  },
+  "tags": ["react", "vite", "spa"],
+  "support": "official"
+}

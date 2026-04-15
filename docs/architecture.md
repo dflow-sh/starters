@@ -23,7 +23,7 @@ starters/
   fullstack/
     nextjs/
 packages/
-  create-dflow-app/       # bootstrap CLI (planned)
+  create-dflow-app/       # bootstrap CLI
   starter-kit/            # optional shared scripts
   manifest-tools/         # optional: validate / registry
 .github/
@@ -43,7 +43,7 @@ Turborepo and many monorepo examples use `apps/` plus `packages/`. The internal 
 | Area | Role |
 | --- | --- |
 | `starters/` | Runnable templates only. Each subdirectory is self-contained with its stack’s normal install/build/run flow. |
-| `packages/` | Shared tooling: planned bootstrap CLI (`create-dflow-app`), optional shared scripts (`starter-kit`), optional manifest validation/registry helpers (`manifest-tools`). |
+| `packages/` | Shared tooling: bootstrap CLI (`create-dflow-app`), optional shared scripts (`starter-kit`), manifest validation/registry helpers (`manifest-tools`). |
 | `.github/workflows/` | CI: manifest validation, matrix builds, and related automation (as phases land). |
 | `docs/` | Architecture and other repo-level documentation. |
 
