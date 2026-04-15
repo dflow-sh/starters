@@ -32,4 +32,4 @@ Optional variables are listed in `dflow.template.json` under `env` (names and de
 
 On **Vercel** or similar, the platform usually runs `next build` and invokes its own Next-optimized start — use their documented start command instead of `npm run start` if it differs.
 
-Deploy manifest: `dflow.template.json`.
+Deploy manifest: `dflow.template.json`. Walkthrough: [docs/deploy/dflow.md](../../../docs/deploy/dflow.md).

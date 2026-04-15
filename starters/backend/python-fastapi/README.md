@@ -29,4 +29,9 @@ python3 -m uvicorn main:app --host 0.0.0.0 --port 8000
 
 `GET /health` returns `200` with JSON `{"status":"ok"}`.
 
-Deploy manifest: `dflow.template.json`.
+## Deploy on dFlow
+
+1. Use this directory as the app root (or copy it into your repo).
+2. Point dFlow at **`dflow.template.json`**: it declares `installCommand`, `buildCommand`, `startCommand`, `port`, and HTTP `healthCheck` for `/health`.
+
+Manifest format: [docs/manifest-v1.md](../../../docs/manifest-v1.md). Deploy walkthrough: [docs/deploy/dflow.md](../../../docs/deploy/dflow.md).

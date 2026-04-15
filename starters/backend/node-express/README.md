@@ -18,7 +18,7 @@ Default port is **8080** (or `PORT` from the environment), matching `dflow.templ
 1. Use this directory as the app root (or copy it into your repo).
 2. Point dFlow at **`dflow.template.json`**: it declares `installCommand`, `buildCommand`, `startCommand`, `port`, and HTTP `healthCheck` for `/health`.
 
-Manifest format is documented in the repo at `docs/manifest-v1.md`.
+Manifest format: [docs/manifest-v1.md](../../../docs/manifest-v1.md). Deploy walkthrough: [docs/deploy/dflow.md](../../../docs/deploy/dflow.md).
 
 ## CI (GitHub Actions)
 

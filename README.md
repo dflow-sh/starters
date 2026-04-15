@@ -26,6 +26,8 @@ packages/
   workflows/
 docs/
   architecture.md
+  deploy/
+    dflow.md
 ```
 
 **Pattern:** `starters/<category>/<kebab-id>/` with `category` ∈ `frontend` | `backend` | `fullstack` | `static`. The folders above are **examples**; `static/<kebab-id>/` follows the same rule.
@@ -54,7 +56,7 @@ We use `starters/` instead of `apps/` so this repo stays distinct from productio
 
 **Scaffold:** run `pnpm exec create-dflow-app` from this repo (after `pnpm install`), or use `pnpm dlx` once the package is published. Examples and flags: [packages/create-dflow-app/README.md](./packages/create-dflow-app/README.md). Maintainer verification: `pnpm run verify:create-dflow-app` (requires JDK 17+, Go 1.22+, Python 3, and npm for the starter matrix).
 
-**Deploy:** each starter ships a `dflow.template.json` manifest at its root. Spec and JSON Schema: [docs/manifest-v1.md](./docs/manifest-v1.md). Validate locally with `pnpm install` and `pnpm run validate:manifests`. Deploy through the dFlow app using your Git provider integration ([GitHub integration overview](https://docs.dflow.sh/articles/7377791-github-integration)).
+**Deploy:** each starter ships a `dflow.template.json` manifest at its root. Spec and JSON Schema: [docs/manifest-v1.md](./docs/manifest-v1.md). End-to-end deploy walkthrough: [docs/deploy/dflow.md](./docs/deploy/dflow.md). Validate locally with `pnpm install` and `pnpm run validate:manifests`. Deploy through the dFlow app using your Git provider integration ([GitHub integration overview](https://docs.dflow.sh/articles/7377791-github-integration)).
 
 ## Contributing
 

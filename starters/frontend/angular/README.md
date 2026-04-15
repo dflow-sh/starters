@@ -25,4 +25,4 @@ The preview command matches the manifest `startCommand` and CI smoke check (port
 2. Point the deployment at the static root `dist/angular/browser/` (see manifest `outputs.staticDir`).
 3. Use `npm run preview` (or your platform’s static file server) when you need a long-lived process serving the built files.
 
-Deploy manifest: `dflow.template.json`.
+Deploy manifest: `dflow.template.json`. Walkthrough: [docs/deploy/dflow.md](../../../docs/deploy/dflow.md).
