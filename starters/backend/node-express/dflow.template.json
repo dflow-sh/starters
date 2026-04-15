@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1",
+  "id": "backend/node-express",
+  "displayName": "Node (Express)",
+  "category": "backend",
+  "language": "JavaScript",
+  "framework": "Express",
+  "runtime": "node",
+  "installCommand": "npm install",
+  "buildCommand": "",
+  "startCommand": "node src/server.js",
+  "port": 8080,
+  "healthCheck": {
+    "type": "http",
+    "path": "/health",
+    "expectedStatus": 200
+  },
+  "env": [
+    {
+      "name": "PORT",
+      "required": false,
+      "description": "HTTP listen port when you override the default (manifest default: 8080)."
+    }
+  ],
+  "tags": ["node", "express", "api"],
+  "support": "official"
+}

@@ -26,6 +26,7 @@ create-dflow-app list
 create-dflow-app frontend/react-vite ./my-app
 create-dflow-app frontend/vue-vite ./my-vue-app
 create-dflow-app backend/go-gin ./api-go
+create-dflow-app backend/node-express ./api-node
 ```
 
 **Local monorepo** (while developing templates):
@@ -77,7 +78,7 @@ pnpm --filter @dflow-starters/create-dflow-app run verify
 
 This runs `create-dflow-app` for **each** catalog entry, then runs `installCommand` and `buildCommand` from the manifest. Prerequisites:
 
-- **Node + npm** (e.g. `frontend/react-vite`)
+- **Node + npm** (e.g. `frontend/react-vite`, `backend/node-express`)
 - **Python 3 + pip** (`backend/python-fastapi`)
 - **JDK 17+** on `PATH` (`backend/java-springboot` uses the Maven Wrapper `./mvnw`; Java is still required)
 - **Go 1.22+** on `PATH` (`backend/go-gin`)

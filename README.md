@@ -15,6 +15,7 @@ starters/
     python-fastapi/
     java-springboot/
     go-gin/
+    node-express/
   fullstack/
     nextjs/
 packages/

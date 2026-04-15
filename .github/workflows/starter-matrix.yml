@@ -81,6 +81,16 @@ jobs:
             build_command: go build -o bin/server .
             smoke_port: "8080"
             smoke_path: /health
+          # https://app.clickup.com/t/86d2nff5v
+          - id: backend/node-express
+            path: starters/backend/node-express
+            runtime: node
+            npm_key_file: starters/backend/node-express/package.json
+            install_command: npm install
+            build_command: ""
+            smoke_port: "8080"
+            smoke_path: /health
+            node_smoke_cmd: "npm start"
 
     defaults:
       run:
