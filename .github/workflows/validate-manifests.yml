@@ -1,9 +1,18 @@
+# Job A — validate all dflow.template.json against JSON Schema + registry (Phase B CI)
+# https://app.clickup.com/t/86d2nff0v
 name: Validate manifests
 
 on:
   push:
     branches: [main]
   pull_request:
+
+concurrency:
+  group: validate-manifests-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   validate-manifests:
@@ -13,12 +22,12 @@ jobs:
 
       - uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 9.15.4
 
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "pnpm"
+          cache: pnpm
 
       - run: pnpm install --frozen-lockfile
 

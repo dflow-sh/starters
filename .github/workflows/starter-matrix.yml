@@ -1,0 +1,153 @@
+# Job B — install + build + optional HTTP smoke per Phase 1 starter (manifest healthCheck)
+# https://app.clickup.com/t/86d2nff0v — matrix: epic Phase 1 starters
+# https://app.clickup.com/t/86d2nfce8
+name: Starter matrix (Phase 1)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: starter-matrix-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: "20"
+  PYTHON_VERSION: "3.12"
+  JAVA_VERSION: "17"
+  JAVA_DISTRIBUTION: temurin
+
+jobs:
+  build:
+    name: ${{ matrix.id }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - id: frontend/react-vite
+            path: starters/frontend/react-vite
+            runtime: node
+            npm_key_file: starters/frontend/react-vite/package.json
+            install_command: npm install
+            build_command: npm run build
+            smoke_port: "4173"
+            smoke_path: /
+          - id: backend/python-fastapi
+            path: starters/backend/python-fastapi
+            runtime: python
+            install_command: python3 -m pip install -r requirements.txt
+            build_command: ""
+            smoke_port: "8000"
+            smoke_path: /health
+          - id: backend/java-springboot
+            path: starters/backend/java-springboot
+            runtime: java
+            install_command: ./mvnw -B -q dependency:resolve
+            build_command: ./mvnw -B -q package -DskipTests
+            smoke_port: "8080"
+            smoke_path: /health
+
+    defaults:
+      run:
+        working-directory: ${{ matrix.path }}
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        if: matrix.runtime == 'node'
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Cache node_modules (npm)
+        if: matrix.runtime == 'node'
+        uses: actions/cache@v4
+        with:
+          path: ${{ matrix.path }}/node_modules
+          key: ${{ runner.os }}-node-${{ matrix.id }}-${{ hashFiles(matrix.npm_key_file) }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ matrix.id }}-
+
+      - name: Set up Python
+        if: matrix.runtime == 'python'
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: ${{ matrix.path }}/requirements.txt
+
+      - name: Set up Java
+        if: matrix.runtime == 'java'
+        uses: actions/setup-java@v4
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+
+      - name: Install (Node)
+        if: matrix.runtime == 'node'
+        run: ${{ matrix.install_command }}
+
+      - name: Install (Python)
+        if: matrix.runtime == 'python'
+        run: ${{ matrix.install_command }}
+
+      - name: Install (Java)
+        if: matrix.runtime == 'java'
+        run: |
+          chmod +x mvnw
+          ${{ matrix.install_command }}
+
+      - name: Build
+        if: matrix.build_command != ''
+        run: ${{ matrix.build_command }}
+
+      - name: Smoke (healthCheck)
+        env:
+          SMOKE_PORT: ${{ matrix.smoke_port }}
+          SMOKE_PATH: ${{ matrix.smoke_path }}
+        run: |
+          set -euo pipefail
+          case "${{ matrix.runtime }}" in
+            node)
+              npm run preview -- --host 127.0.0.1 --port "${SMOKE_PORT}" &
+              pid=$!
+              ;;
+            python)
+              python3 -m uvicorn main:app --host 127.0.0.1 --port "${SMOKE_PORT}" &
+              pid=$!
+              ;;
+            java)
+              java -jar target/app.jar &
+              pid=$!
+              ;;
+            *)
+              echo "::error::Unknown runtime: ${{ matrix.runtime }}"
+              exit 1
+              ;;
+          esac
+          cleanup() {
+            kill "$pid" 2>/dev/null || true
+            wait "$pid" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+          deadline=$((SECONDS + 90))
+          ok=
+          while [ $SECONDS -lt $deadline ]; do
+            if curl -sf -o /dev/null "http://127.0.0.1:${SMOKE_PORT}${SMOKE_PATH}"; then
+              ok=1
+              break
+            fi
+            sleep 1
+          done
+          if [ -z "${ok:-}" ]; then
+            echo "::error::Health check failed: http://127.0.0.1:${SMOKE_PORT}${SMOKE_PATH}"
+            exit 1
+          fi
