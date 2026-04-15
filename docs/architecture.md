@@ -63,6 +63,14 @@ Turborepo and many monorepo examples use `apps/` plus `packages/`. The internal 
 
 This matches the epic non-goal: *no requirement that every starter is a Node workspace package*.
 
+### Turborepo graph and polyglot exclusions
+
+Root [pnpm-workspace.yaml](../pnpm-workspace.yaml) includes **only** `packages/*`. **`starters/` is not a workspace glob** so templates are not forced into the Node install graph: Python, JVM, Go, and other stacks stay standalone under `starters/<category>/<kebab-id>/` with their native toolchains.
+
+[Turborepo](https://turborepo.dev/docs) schedules tasks from **workspace packages** that expose matching `package.json` scripts. A `turbo run build` (or `lint` / `test`) run only includes packages that define those scripts; folders outside the pnpm workspace—most polyglot starters today—**do not appear** in that task graph at all. They are not “skipped” as empty tasks; they are invisible to Turbo until (if ever) a Node-based starter is intentionally added as a workspace member under `packages/*` or via a future `starters/*` glob for JS-only templates.
+
+**Implication:** orchestration for Java / Go / Python / etc. belongs in **CI matrix jobs** (install, build, smoke) and in **manifest validation** ([`@dflow-starters/manifest-tools`](../packages/manifest-tools)), not in `turbo run build` edges. When a starter ships as a real workspace package, configure [task `outputs`](https://turborepo.dev/docs/reference/configuration#outputs) (e.g. `dist/**`, `.next/**`) and `dependsOn` (e.g. `^build`) like the main product monorepo; use [globalEnv](https://turborepo.dev/docs/reference/configuration#globalenv) / [globalDependencies](https://turborepo.dev/docs/reference/configuration#globaldependencies) in [turbo.json](../turbo.json) for shared env and lockfile/schema inputs.
+
 ## Deploy contract (manifest)
 
 Every starter includes a **`dflow.template.json`** at its root (v1). The manifest describes how dFlow installs, builds, and runs the template—commands, port, health check (if applicable), static output directory (if SPA), **environment variable names only** (no secrets), tags, display name, language, and framework metadata. Field definitions and examples: [manifest-v1.md](./manifest-v1.md) ([schema task](https://app.clickup.com/t/86d2nfez3)); [CONTRIBUTING.md](../CONTRIBUTING.md) summarizes contributor expectations.

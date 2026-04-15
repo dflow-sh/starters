@@ -1,0 +1,13 @@
+{
+  "name": "@dflow-starters/manifest-tools",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "validate": "node src/validate.mjs",
+    "self-test": "node src/self-test.mjs"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
+  }
+}

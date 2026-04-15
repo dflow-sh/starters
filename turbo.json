@@ -1,0 +1,25 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["pnpm-lock.yaml", "schemas/**"],
+  "globalEnv": ["DFLOW_STARTERS_ROOT", "NODE_ENV"],
+  "tasks": {
+    "validate": {
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "../../starters/**/dflow.template.json",
+        "../../schemas/**"
+      ],
+      "outputs": []
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "build/**"]
+    },
+    "lint": {
+      "cache": true
+    },
+    "test": {
+      "cache": true
+    }
+  }
+}

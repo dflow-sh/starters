@@ -4,11 +4,11 @@
   "type": "module",
   "packageManager": "pnpm@9.15.4",
   "scripts": {
-    "validate:manifests": "node packages/manifest-tools/src/validate.mjs",
-    "validate:manifests:self-test": "node packages/manifest-tools/src/self-test.mjs"
+    "check": "turbo run validate",
+    "validate:manifests": "turbo run validate --filter=@dflow-starters/manifest-tools",
+    "validate:manifests:self-test": "pnpm --filter @dflow-starters/manifest-tools run self-test"
   },
   "devDependencies": {
-    "ajv": "^8.17.1",
-    "ajv-formats": "^3.0.1"
+    "turbo": "^2.5.0"
   }
 }
