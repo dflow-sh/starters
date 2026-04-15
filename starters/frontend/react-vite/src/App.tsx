@@ -1,3 +1,5 @@
 export default function App() {
-  return <h1>dFlow React (Vite) starter</h1>;
+  const title =
+    import.meta.env.VITE_APP_TITLE ?? "dFlow React (Vite) starter";
+  return <h1>{title}</h1>;
 }
