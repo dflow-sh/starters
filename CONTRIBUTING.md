@@ -8,7 +8,7 @@ Thanks for helping improve [`dflow-sh/starters`](https://github.com/dflow-sh/sta
    - **category** (fixed set): `frontend` \| `backend` \| `fullstack` \| `static`
    - **kebab-id**: lowercase, hyphen-separated ASCII, **no version in the folder name** (e.g. `react-vite`, not `react-vite-18`)
 2. **Make it self-contained** — the directory should run with that stack’s normal toolchain (npm/pnpm, pip, Maven/Gradle, Go modules, etc.). Java/Go/Python starters may live only under `starters/` and need not join a JS workspace.
-3. **Manifest** — add a `dflow.template.json` at the starter root when the schema is available (see project tasks). Include install/build/start commands, port, health check path (if applicable), static output directory (if SPA), **environment variable names only** (no secrets), tags, display name, language, and framework metadata.
+3. **Manifest** — add `dflow.template.json` at the starter root per [docs/manifest-v1.md](./docs/manifest-v1.md). Include install/build/start commands, port, health check path (if applicable), static output directory (if SPA), **environment variable names only** (no secrets), tags, display name, language, and framework metadata. Run `pnpm run validate:manifests` before opening a PR.
 4. **Document** — a short `README.md` inside the starter explaining purpose, how to run locally, and deploy notes for dFlow.
 5. **Open a PR** — use a focused branch; see checklist below.
 
@@ -24,7 +24,7 @@ Thanks for helping improve [`dflow-sh/starters`](https://github.com/dflow-sh/sta
 
 - [ ] Starter path matches `starters/<category>/<kebab-id>/` and naming rules above.
 - [ ] No secrets, credentials, or private dependency references.
-- [ ] `dflow.template.json` included when the schema is merged; until then, note “manifest pending” in the PR or follow the interim process agreed with maintainers.
+- [ ] `dflow.template.json` present and passes `pnpm run validate:manifests`.
 - [ ] Local `README` explains run and deploy; env vars are names-only with examples.
 - [ ] **Official** starters: confirm CI expectations (install / build / smoke) with maintainers before merge.
 - [ ] PR description states **official** or **community** tier and links any related tracking issue.

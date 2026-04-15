@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1",
+  "id": "backend/python-fastapi",
+  "displayName": "Python FastAPI",
+  "category": "backend",
+  "language": "Python",
+  "framework": "FastAPI",
+  "installCommand": "pip install -r requirements.txt",
+  "buildCommand": "",
+  "startCommand": "uvicorn main:app --host 0.0.0.0 --port 8000",
+  "tags": ["python", "api"],
+  "support": "official"
+}

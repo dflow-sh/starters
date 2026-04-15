@@ -51,7 +51,7 @@ We use `starters/` instead of `apps/` so this repo stays distinct from productio
 
 **Planned:** `packages/create-dflow-app` (or equivalent) will copy one starter to a new directory so end users do not need the full monorepo. Track progress in the project backlog.
 
-**Deploy:** each starter will ship a `dflow.template.json` manifest (schema and validation land in a dedicated change set). Deploy through the dFlow app using your Git provider integration ([GitHub integration overview](https://docs.dflow.sh/articles/7377791-github-integration)).
+**Deploy:** each starter ships a `dflow.template.json` manifest at its root. Spec and JSON Schema: [docs/manifest-v1.md](./docs/manifest-v1.md). Validate locally with `pnpm install` and `pnpm run validate:manifests`. Deploy through the dFlow app using your Git provider integration ([GitHub integration overview](https://docs.dflow.sh/articles/7377791-github-integration)).
 
 ## Contributing
 

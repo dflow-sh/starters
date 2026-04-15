@@ -65,7 +65,7 @@ This matches the epic non-goal: *no requirement that every starter is a Node wor
 
 ## Deploy contract (manifest)
 
-Every starter should include a **`dflow.template.json`** at its root once the v1 schema is published (tracked in Phase A). The manifest describes how dFlow installs, builds, and runs the template—commands, port, health check (if applicable), static output directory (if SPA), **environment variable names only** (no secrets), tags, display name, language, and framework metadata. Detailed field definitions live with the schema task; [CONTRIBUTING.md](../CONTRIBUTING.md) summarizes contributor expectations.
+Every starter includes a **`dflow.template.json`** at its root (v1). The manifest describes how dFlow installs, builds, and runs the template—commands, port, health check (if applicable), static output directory (if SPA), **environment variable names only** (no secrets), tags, display name, language, and framework metadata. Field definitions and examples: [manifest-v1.md](./manifest-v1.md) ([schema task](https://app.clickup.com/t/86d2nfez3)); [CONTRIBUTING.md](../CONTRIBUTING.md) summarizes contributor expectations.
 
 ## Single source of truth for “what exists”
 

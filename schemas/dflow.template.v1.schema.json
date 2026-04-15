@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dflow.sh/schemas/dflow.template.v1.schema.json",
+  "title": "dflow.template.json",
+  "description": "Deploy manifest v1 for dFlow starter templates (dflow-sh/starters).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "displayName",
+    "category",
+    "language",
+    "framework",
+    "installCommand",
+    "buildCommand",
+    "startCommand",
+    "port",
+    "tags",
+    "support"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "1",
+      "description": "Manifest format version. v1 documents use the value \"1\"."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^(frontend|backend|fullstack|static)/[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Stable template id; must match starters/<category>/<kebab-id>/ (e.g. frontend/react-vite)."
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable name for catalogs and docs."
+    },
+    "category": {
+      "type": "string",
+      "enum": ["frontend", "backend", "fullstack", "static"],
+      "description": "Layout category; must match the first segment of id and the starters path."
+    },
+    "language": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Primary language (e.g. TypeScript, Python, Java)."
+    },
+    "framework": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Primary framework or runtime surface (e.g. Vite, FastAPI, Spring Boot)."
+    },
+    "runtime": {
+      "type": "string",
+      "enum": ["node", "python", "go", "jvm", "static"],
+      "description": "Optional coarse runtime hint for platform and CI."
+    },
+    "installCommand": {
+      "$ref": "#/$defs/nonEmptyCommand",
+      "description": "Command or argv to install dependencies."
+    },
+    "buildCommand": {
+      "$ref": "#/$defs/buildCommand",
+      "description": "Command or argv to produce build artifacts; may be empty for interpreted-only templates."
+    },
+    "startCommand": {
+      "$ref": "#/$defs/nonEmptyCommand",
+      "description": "Command or argv to run the app (dev or production server as documented in the starter README)."
+    },
+    "port": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 65535,
+      "description": "Primary listen port for the running service."
+    },
+    "healthCheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "path", "expectedStatus"],
+      "properties": {
+        "type": {
+          "const": "http",
+          "description": "Health check mechanism; v1 only defines HTTP GET."
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^/",
+          "description": "URL path for the health check (e.g. /health)."
+        },
+        "expectedStatus": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 599,
+          "description": "Expected HTTP status code."
+        }
+      }
+    },
+    "outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "staticDir": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Relative path to static assets root (e.g. SPAs after build)."
+        }
+      }
+    },
+    "env": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "required"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Environment variable name only; never store secret values in the manifest."
+          },
+          "required": {
+            "type": "boolean",
+            "description": "Whether deploy/runtime requires this variable."
+          },
+          "description": {
+            "type": "string",
+            "description": "What the variable is for (no values or secret material)."
+          }
+        }
+      },
+      "description": "Declared environment variables (names and semantics only)."
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Free-form labels for search and grouping."
+    },
+    "support": {
+      "type": "string",
+      "enum": ["official", "community"],
+      "description": "Maintenance and CI tier for this starter."
+    }
+  },
+  "$defs": {
+    "nonEmptyCommand": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "buildCommand": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ],
+      "description": "String (including empty) or array of non-empty strings (empty array allowed)."
+    }
+  }
+}
