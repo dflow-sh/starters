@@ -44,6 +44,7 @@ jobs:
             build_command: ""
             smoke_port: "8000"
             smoke_path: /health
+          # https://app.clickup.com/t/86d2nff20
           - id: backend/java-springboot
             path: starters/backend/java-springboot
             runtime: java
