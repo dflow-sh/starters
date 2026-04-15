@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1",
+  "id": "fullstack/nextjs",
+  "displayName": "Next.js (App Router)",
+  "category": "fullstack",
+  "language": "TypeScript",
+  "framework": "Next.js",
+  "runtime": "node",
+  "installCommand": "npm install",
+  "buildCommand": "npm run build",
+  "startCommand": "npm run start",
+  "port": 3000,
+  "healthCheck": {
+    "type": "http",
+    "path": "/api/health",
+    "expectedStatus": 200
+  },
+  "outputs": {
+    "serverBuildDir": ".next"
+  },
+  "env": [
+    {
+      "name": "PORT",
+      "required": false,
+      "description": "Override the HTTP port when your platform injects PORT (Next.js honors it in production)."
+    },
+    {
+      "name": "NEXT_TELEMETRY_DISABLED",
+      "required": false,
+      "description": "Set to 1 in CI or sensitive environments to disable Next.js telemetry (recommended for automated builds)."
+    }
+  ],
+  "tags": ["next", "nextjs", "react", "ssr", "app-router"],
+  "support": "official"
+}

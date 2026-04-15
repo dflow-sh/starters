@@ -8,6 +8,7 @@ const IGNORE_NAMES = new Set([
   "dist",
   "build",
   "target",
+  ".next",
   ".turbo",
   "__pycache__",
   ".venv",

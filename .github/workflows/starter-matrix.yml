@@ -91,6 +91,17 @@ jobs:
             smoke_port: "8080"
             smoke_path: /health
             node_smoke_cmd: "npm start"
+          # https://app.clickup.com/t/86d2nff5y
+          - id: fullstack/nextjs
+            path: starters/fullstack/nextjs
+            runtime: node
+            npm_key_file: starters/fullstack/nextjs/package.json
+            install_command: npm install
+            build_command: npm run build
+            smoke_port: "3000"
+            smoke_path: /api/health
+            node_smoke_cmd: "npm run start"
+            next_telemetry_disabled: "1"
 
     defaults:
       run:
@@ -181,6 +192,8 @@ jobs:
 
       - name: Build
         if: matrix.build_command != ''
+        env:
+          NEXT_TELEMETRY_DISABLED: ${{ matrix.next_telemetry_disabled }}
         run: ${{ matrix.build_command }}
 
       - name: Smoke (healthCheck)

@@ -103,6 +103,11 @@
           "type": "string",
           "minLength": 1,
           "description": "Relative path to static assets root (e.g. SPAs after build)."
+        },
+        "serverBuildDir": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Relative path to server-side build artifacts (e.g. Next.js .next directory for App Router / SSR)."
         }
       }
     },

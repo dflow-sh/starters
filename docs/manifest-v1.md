@@ -35,7 +35,7 @@ This keeps catalog ids stable and unambiguous.
 | `startCommand` | yes | string \| string[] | Command to run the app (document dev vs prod in the starter README). |
 | `port` | yes | integer | TCP port (1–65535) the app listens on. |
 | `healthCheck` | no | object | HTTP health check (see below). |
-| `outputs` | no | object | Build outputs; v1 supports `staticDir` for SPAs. |
+| `outputs` | no | object | Build outputs; v1 supports `staticDir` for SPAs and optional `serverBuildDir` for SSR / Node server bundles (e.g. Next.js `.next`). |
 | `env` | no | array | Declared variables: `name`, `required`, optional `description` — **no values or secrets**. |
 | `tags` | yes | string[] | Labels for discovery (non-empty strings). |
 | `support` | yes | string | `official` or `community`. |
@@ -56,6 +56,7 @@ Object with:
 ### `outputs` (optional)
 
 - `staticDir` — Path relative to the starter root for static assets (e.g. `dist`).
+- `serverBuildDir` — Path relative to the starter root for server-side build output (e.g. Next.js `.next`).
 
 ### `env` (optional)
 
