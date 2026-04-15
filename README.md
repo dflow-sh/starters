@@ -4,28 +4,30 @@ Public templates for bootstrapping applications you can run and deploy on [dFlow
 
 ## Repository map
 
-Target layout (see [CONTRIBUTING.md](./CONTRIBUTING.md) for how to add a starter):
+Canonical layout and rationale: [docs/architecture.md](./docs/architecture.md). To add a starter, see [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ```text
 starters/
   frontend/
-    <kebab-id>/
+    react-vite/
   backend/
-    <kebab-id>/
+    python-fastapi/
+    java-springboot/
   fullstack/
-    <kebab-id>/
-  static/
-    <kebab-id>/
+    nextjs/
 packages/
-  create-dflow-app/      # bootstrap CLI (planned)
-  starter-kit/           # optional shared scripts
-  manifest-tools/        # optional validate / registry helpers
+  create-dflow-app/       # bootstrap CLI (planned)
+  starter-kit/            # optional shared scripts
+  manifest-tools/         # optional: validate / registry
 .github/
   workflows/
 docs/
+  architecture.md
 ```
 
-We use `starters/` instead of `apps/` so this repo stays distinct from production `apps/*` layouts in the main cloud monorepo. Each runnable starter lives under `starters/<category>/<kebab-id>/` with its own native toolchain (Node, Python, JVM, Go, etc.); not everything has to be a Node workspace package.
+**Pattern:** `starters/<category>/<kebab-id>/` with `category` ∈ `frontend` | `backend` | `fullstack` | `static`. The folders above are **examples**; `static/<kebab-id>/` follows the same rule.
+
+We use `starters/` instead of `apps/` so this repo stays distinct from production `apps/*` in [`dflow-sh/cloud`](https://github.com/dflow-sh/cloud) (Turborepo-style examples often use `apps/`; we do not). Each runnable starter uses its own native toolchain (Node, Python, JVM, Go, etc.). **Non-Node starters are not required to be pnpm workspace members**—they can live only under `starters/`. Node-based starters may join the root workspace when orchestration lands (pnpm + Turborepo, Phase A).
 
 ## Quick links
 
