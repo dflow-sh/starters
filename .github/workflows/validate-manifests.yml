@@ -25,3 +25,5 @@ jobs:
       - run: pnpm run validate:manifests
 
       - run: pnpm run validate:manifests:self-test
+
+      - run: pnpm run check:registry

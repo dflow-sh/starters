@@ -11,6 +11,14 @@
       ],
       "outputs": []
     },
+    "build-registry": {
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "../../starters/**/dflow.template.json",
+        "../../schemas/**"
+      ],
+      "outputs": ["../../registry.json"]
+    },
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "build/**"]

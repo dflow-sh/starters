@@ -77,7 +77,7 @@ Every starter includes a **`dflow.template.json`** at its root (v1). The manifes
 
 ## Single source of truth for “what exists”
 
-The epic calls for the list of starters to match a **registry** derived from `starters/**/dflow.template.json` (or a generated `registry.json`). Until that generator ships, contributors should still add `dflow.template.json` per starter when the schema is available so CI and the product catalog can stay aligned.
+The list of starters matches a **registry** derived from `starters/**/dflow.template.json`: repo-root `registry.json` is generated with `pnpm run build:registry` and checked in CI with `pnpm run check:registry`. Shape and duplicate-id rules: [registry-v1.md](./registry-v1.md).
 
 ## Relationship to Phase A (Foundations)
 

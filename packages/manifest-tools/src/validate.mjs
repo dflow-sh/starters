@@ -19,7 +19,7 @@ export function getStartersRoot() {
   return path.join(REPO_ROOT, "starters");
 }
 
-function listStarterManifests(startersRoot) {
+export function listStarterManifests(startersRoot = getStartersRoot()) {
   const out = [];
   function walk(dir) {
     if (!fs.existsSync(dir)) return;
@@ -67,7 +67,7 @@ function formatAjvErrors(validate) {
   });
 }
 
-function loadSchemaValidator() {
+export function loadTemplateSchemaValidator() {
   const schema = JSON.parse(fs.readFileSync(SCHEMA_PATH, "utf8"));
   const ajv = new Ajv2020({ allErrors: true, strict: false });
   addFormats(ajv);
@@ -129,7 +129,7 @@ With paths, validates only those files (path/id rules apply under starters/ only
   }
 
   const paths = args.filter((a) => a !== "--");
-  const schemaValidate = loadSchemaValidator();
+  const schemaValidate = loadTemplateSchemaValidator();
   const startersRoot = getStartersRoot();
   const files =
     paths.length > 0

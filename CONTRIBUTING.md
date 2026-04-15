@@ -8,7 +8,7 @@ Thanks for helping improve [`dflow-sh/starters`](https://github.com/dflow-sh/sta
    - **category** (fixed set): `frontend` \| `backend` \| `fullstack` \| `static`
    - **kebab-id**: lowercase, hyphen-separated ASCII, **no version in the folder name** (e.g. `react-vite`, not `react-vite-18`)
 2. **Make it self-contained** — the directory should run with that stack’s normal toolchain (npm/pnpm, pip, Maven/Gradle, Go modules, etc.). Java/Go/Python starters may live only under `starters/` and need not join a JS workspace.
-3. **Manifest** — add `dflow.template.json` at the starter root per [docs/manifest-v1.md](./docs/manifest-v1.md). Include install/build/start commands, port, health check path (if applicable), static output directory (if SPA), **environment variable names only** (no secrets), tags, display name, language, and framework metadata. Run `pnpm run validate:manifests` before opening a PR.
+3. **Manifest** — add `dflow.template.json` at the starter root per [docs/manifest-v1.md](./docs/manifest-v1.md). Include install/build/start commands, port, health check path (if applicable), static output directory (if SPA), **environment variable names only** (no secrets), tags, display name, language, and framework metadata. Run `pnpm run validate:manifests` and `pnpm run build:registry` (updates [registry.json](./registry.json)) before opening a PR.
 4. **Document** — a short `README.md` inside the starter explaining purpose, how to run locally, and deploy notes for dFlow.
 5. **Open a PR** — use a focused branch; see checklist below.
 

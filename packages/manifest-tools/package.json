@@ -4,6 +4,8 @@
   "type": "module",
   "scripts": {
     "validate": "node src/validate.mjs",
+    "build-registry": "node src/build-registry.mjs",
+    "check-registry": "node src/build-registry.mjs --check",
     "self-test": "node src/self-test.mjs"
   },
   "devDependencies": {

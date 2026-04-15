@@ -8,13 +8,11 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
-import Ajv2020 from "ajv/dist/2020.js";
-import addFormats from "ajv-formats";
-import { validateManifestFile, getStartersRoot } from "./validate.mjs";
+import { validateManifestFile, getStartersRoot, loadTemplateSchemaValidator } from "./validate.mjs";
+import { findDuplicateStarterIds } from "./build-registry.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, "../../..");
-const SCHEMA_PATH = path.join(REPO_ROOT, "schemas/dflow.template.v1.schema.json");
 const INVALID_FIXTURE = path.join(
   __dirname,
   "../fixtures/invalid/dflow.template.json",
@@ -25,13 +23,6 @@ const VALID_FIXTURE = path.join(
 );
 const validateScript = path.join(__dirname, "validate.mjs");
 
-function loadSchemaValidator() {
-  const schema = JSON.parse(fs.readFileSync(SCHEMA_PATH, "utf8"));
-  const ajv = new Ajv2020({ allErrors: true, strict: false });
-  addFormats(ajv);
-  return ajv.compile(schema);
-}
-
 function assert(cond, msg) {
   if (!cond) {
     console.error(`validate:manifests:self-test failed: ${msg}`);
@@ -40,7 +31,13 @@ function assert(cond, msg) {
 }
 
 function main() {
-  const schemaValidate = loadSchemaValidator();
+  const dupes = findDuplicateStarterIds([
+    { id: "a/b", manifestPath: "starters/a/b/dflow.template.json" },
+    { id: "a/b", manifestPath: "starters/a/c/dflow.template.json" },
+  ]);
+  assert(dupes.length === 1 && dupes[0][0] === "a/b", "expected duplicate id detection");
+
+  const schemaValidate = loadTemplateSchemaValidator();
 
   const invalidErrors = validateManifestFile(
     INVALID_FIXTURE,

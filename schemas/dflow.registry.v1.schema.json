@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dflow.sh/schemas/dflow.registry.v1.schema.json",
+  "title": "dflow starters registry",
+  "description": "Aggregated catalog of all starters under starters/**/dflow.template.json (see docs/registry-v1.md).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["registryVersion", "starters"],
+  "properties": {
+    "registryVersion": {
+      "type": "string",
+      "const": "1",
+      "description": "Format version of this registry document."
+    },
+    "starters": {
+      "type": "array",
+      "description": "All validated templates, sorted by id.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "path", "manifestPath", "manifest"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Same as manifest.id; must be unique in this array."
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Repo-relative path to the starter directory (e.g. starters/frontend/react-vite)."
+          },
+          "manifestPath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Repo-relative path to dflow.template.json for this starter."
+          },
+          "manifest": {
+            "$ref": "./dflow.template.v1.schema.json",
+            "description": "Full v1 deploy manifest."
+          }
+        }
+      }
+    }
+  }
+}
