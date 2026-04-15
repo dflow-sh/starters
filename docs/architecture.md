@@ -17,6 +17,7 @@ Target structure:
 starters/
   frontend/
     react-vite/
+    vue-vite/
   backend/
     python-fastapi/
     java-springboot/

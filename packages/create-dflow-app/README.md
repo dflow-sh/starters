@@ -24,6 +24,7 @@ create-dflow-app list
 
 ```bash
 create-dflow-app frontend/react-vite ./my-app
+create-dflow-app frontend/vue-vite ./my-vue-app
 ```
 
 **Local monorepo** (while developing templates):

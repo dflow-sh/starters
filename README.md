@@ -10,6 +10,7 @@ Canonical layout and rationale: [docs/architecture.md](./docs/architecture.md). 
 starters/
   frontend/
     react-vite/
+    vue-vite/
   backend/
     python-fastapi/
     java-springboot/

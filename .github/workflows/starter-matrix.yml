@@ -37,6 +37,15 @@ jobs:
             build_command: npm run build
             smoke_port: "4173"
             smoke_path: /
+          # https://app.clickup.com/t/86d2nff5w
+          - id: frontend/vue-vite
+            path: starters/frontend/vue-vite
+            runtime: node
+            npm_key_file: starters/frontend/vue-vite/package.json
+            install_command: npm install
+            build_command: npm run build
+            smoke_port: "4173"
+            smoke_path: /
           - id: backend/python-fastapi
             path: starters/backend/python-fastapi
             runtime: python
