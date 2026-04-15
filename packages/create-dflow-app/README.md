@@ -43,7 +43,7 @@ Ensure `/path/to/starters/registry.json` is up to date (`pnpm run build:registry
 | Flag | Purpose |
 | --- | --- |
 | `--source <path>` | Local starters repo root (reads `registry.json`, copies from `starters/`) |
-| `--ref <git-ref>` | Branch / tag / commit for **remote** copies (default: `main` or `DFLOW_STARTERS_REF`) |
+| `--ref <git-ref>` | Branch / tag / commit for **remote** copies (default: latest `starters/v*` tag via GitHub API, else `main`; override with `DFLOW_STARTERS_REF` or this flag) |
 | `--registry-url <url>` | Full URL to `registry.json` |
 | `--registry-base <url>` | Base for `…/<ref>/registry.json` (default: `https://raw.githubusercontent.com/dflow-sh/starters`) |
 | `-h`, `--help` | Help |
@@ -53,7 +53,8 @@ Ensure `/path/to/starters/registry.json` is up to date (`pnpm run build:registry
 | Variable | Purpose |
 | --- | --- |
 | `DFLOW_STARTERS_GITHUB_REPO` | `owner/repo` for remote copies (default: `dflow-sh/starters`) |
-| `DFLOW_STARTERS_REF` | Default git ref for remote registry + degit |
+| `DFLOW_STARTERS_REF` | Default git ref for remote registry + degit (if unset, CLI resolves newest `starters/v*`) |
+| `GITHUB_TOKEN` / `GH_TOKEN` | Optional; raises GitHub API rate limit when resolving the default tag |
 | `DFLOW_STARTERS_REGISTRY_URL` | Override registry URL |
 | `DFLOW_STARTERS_REGISTRY_BASE` | Override registry base URL |
 
@@ -87,4 +88,6 @@ This runs `create-dflow-app` for **each** catalog entry, then runs `installComma
 ## References
 
 - Task: [Implement packages/create-dflow-app bootstrap CLI](https://app.clickup.com/t/86d2nff0w)
+- Task: [Release engineering: versioning, tags, and changelog](https://app.clickup.com/t/86d2nff6g)
 - Phase: [Phase B — Tooling & CI](https://app.clickup.com/t/86d2nfe34)
+- Releases: [docs/releases.md](../../docs/releases.md)

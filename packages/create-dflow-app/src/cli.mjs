@@ -8,6 +8,7 @@ import {
 } from "./fetch-registry.mjs";
 import { cloneFromGithub, cloneFromLocal, ensureEmptyTargetDir } from "./clone-starter.mjs";
 import { printNextSteps } from "./next-steps.mjs";
+import { resolveLatestStartersTag } from "./resolve-starters-ref.mjs";
 
 function printHelp() {
   console.log(`create-dflow-app — copy a dFlow starter into a new directory
@@ -19,14 +20,14 @@ Usage:
 
 Options:
   --source <path>     Use a local starters repo root (reads registry.json + copies from starters/)
-  --ref <git-ref>     Git branch, tag, or commit for remote templates (default: env DFLOW_STARTERS_REF or main)
+  --ref <git-ref>     Git branch, tag, or commit for remote templates (default: env DFLOW_STARTERS_REF, else latest starters/v* tag, else main)
   --registry-url <url>   Fetch registry JSON from this URL (overrides default GitHub raw URL)
   --registry-base <url>  Base URL for registry (default: https://raw.githubusercontent.com/dflow-sh/starters)
   -h, --help          Show this message
 
 Environment:
   DFLOW_STARTERS_GITHUB_REPO   owner/repo for degit (default: dflow-sh/starters)
-  DFLOW_STARTERS_REF           default git ref (default: main)
+  DFLOW_STARTERS_REF           default git ref (unset: resolve latest starters/v* via GitHub API; fallback main)
   DFLOW_STARTERS_REGISTRY_URL  full URL to registry.json
   DFLOW_STARTERS_REGISTRY_BASE base URL; registry = \${BASE}/\${REF}/registry.json
 
@@ -39,12 +40,16 @@ Local development: pass --source /path/to/starters (or clone first). See README 
  * @param {string[]} argv
  */
 function parseArgs(argv) {
-  /** @type {{ help: boolean, list: boolean, source: string | null, ref: string, registryUrl: string | null, registryBase: string | null, githubRepo: string, positional: string[] }} */
+  const rawEnvRef = process.env.DFLOW_STARTERS_REF;
+  const envRef = typeof rawEnvRef === "string" && rawEnvRef.trim() ? rawEnvRef.trim() : null;
+
+  /** @type {{ help: boolean, list: boolean, source: string | null, ref: string | null, refIsExplicit: boolean, registryUrl: string | null, registryBase: string | null, githubRepo: string, positional: string[] }} */
   const opts = {
     help: false,
     list: false,
     source: null,
-    ref: process.env.DFLOW_STARTERS_REF?.trim() || "main",
+    ref: envRef,
+    refIsExplicit: envRef !== null,
     registryUrl: process.env.DFLOW_STARTERS_REGISTRY_URL?.trim() || null,
     registryBase: process.env.DFLOW_STARTERS_REGISTRY_BASE?.trim() || null,
     githubRepo: process.env.DFLOW_STARTERS_GITHUB_REPO?.trim() || "dflow-sh/starters",
@@ -66,6 +71,7 @@ function parseArgs(argv) {
       continue;
     }
     if (a === "--ref") {
+      opts.refIsExplicit = true;
       opts.ref = argv[++i] ?? "main";
       continue;
     }
@@ -88,6 +94,37 @@ function parseArgs(argv) {
   }
 
   return opts;
+}
+
+/**
+ * @param {ReturnType<typeof parseArgs>} opts
+ */
+async function ensureRemoteRef(opts) {
+  if (opts.source) {
+    return;
+  }
+  if (opts.refIsExplicit) {
+    if (!opts.ref || !String(opts.ref).trim()) {
+      throw new Error("--ref requires a non-empty git ref (or unset DFLOW_STARTERS_REF).");
+    }
+    opts.ref = String(opts.ref).trim();
+    return;
+  }
+  try {
+    const { ref } = await resolveLatestStartersTag(opts.githubRepo);
+    opts.ref = ref;
+    if (ref === "main") {
+      console.warn(
+        'create-dflow-app: no starters/v* tags found; using ref "main". Pin with --ref or DFLOW_STARTERS_REF for a stable snapshot.',
+      );
+    }
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.warn(
+      `create-dflow-app: could not resolve latest starters/v* tag (${msg}). Using "main".`,
+    );
+    opts.ref = "main";
+  }
 }
 
 /** @param {{ starters: Array<{ id: string }> }} registry */
@@ -120,6 +157,9 @@ async function loadRegistry(opts) {
   if (opts.source) {
     const root = path.resolve(opts.source);
     return loadRegistryFromFile(root);
+  }
+  if (!opts.ref) {
+    throw new Error("Missing git ref for remote registry (internal error).");
   }
   const url = defaultRegistryUrl({
     ref: opts.ref,
@@ -156,6 +196,9 @@ async function scaffold(opts, starterId, targetDir) {
       dest,
     });
   } else {
+    if (!opts.ref) {
+      throw new Error("Missing git ref for remote copy (internal error).");
+    }
     await cloneFromGithub({
       githubRepo: opts.githubRepo,
       starterPath: entry.path,
@@ -238,6 +281,8 @@ export async function runCli() {
     printHelp();
     return;
   }
+
+  await ensureRemoteRef(opts);
 
   if (opts.list) {
     if (opts.positional.length) {
