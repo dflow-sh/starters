@@ -20,6 +20,8 @@ Optional variables are listed in `dflow.template.json` under `env` (names and de
 
 ## Deploying on dFlow
 
+**Node version:** `package.json` sets `"engines": { "node": "20.x" }` so Heroku-style **buildpacks** install Node **20** (not the default latest major, which can break this template).
+
 1. Run `npm install` and `npm run build` (or use the manifest `installCommand` / `buildCommand`).
 2. Point the deployment at the static root `dist/` (see manifest `outputs.staticDir`).
 3. Use `npm run preview -- --host 0.0.0.0 --port 4173` (or your platform’s static file server) as the runtime command in production if you are not using a CDN-only static host.
