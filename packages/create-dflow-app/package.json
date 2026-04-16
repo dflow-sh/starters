@@ -8,7 +8,8 @@
     "create-dflow-app": "./bin/create-dflow-app.mjs"
   },
   "scripts": {
-    "verify": "node ./scripts/verify-starters.mjs"
+    "verify": "node ./scripts/verify-starters.mjs",
+    "verify:strict": "node ./scripts/verify-starters.mjs --strict"
   },
   "engines": {
     "node": ">=18"

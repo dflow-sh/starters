@@ -75,23 +75,31 @@ Post-copy renames in `package.json` / `pyproject.toml` are a possible future imp
 From the monorepo root:
 
 ```bash
-pnpm --filter @dflow-starters/create-dflow-app run verify
+pnpm run verify:create-dflow-app
 ```
 
-This runs `create-dflow-app` for **each** catalog entry, then runs `installCommand` and `buildCommand` from the manifest. Prerequisites:
+This runs `create-dflow-app` for **each** catalog entry, then runs `installCommand` and `buildCommand` from the manifest.
+
+**Default (lenient):** starters whose runtimes are **not** installed on your machine are **skipped** (with a `SKIP` line), so the command **exits 0** as long as at least one starter was verified. You need **Node + npm** for the Node starters; other stacks are optional on your laptop.
+
+**Strict (full matrix):** fail immediately if any required runtime is missing (matches “everything must be installed” expectations):
+
+```bash
+pnpm run verify:create-dflow-app:strict
+# or
+VERIFY_STRICT=1 pnpm run verify:create-dflow-app
+# or
+pnpm --filter @dflow-starters/create-dflow-app run verify:strict
+```
+
+Prerequisites when you want **every** starter to run (strict mode or no skips):
 
 - **Node + npm** (e.g. `frontend/react-vite`, `backend/node-express`, `fullstack/nextjs`)
 - **Python 3 + pip** (`backend/python-fastapi`)
-- **JDK 17+** on `PATH` (`backend/java-springboot` uses the Maven Wrapper `./mvnw`; a real JDK is still required). On macOS, `/usr/bin/java` can exist without a JDK; the verify script checks `java -version` so that stub does not count as “installed.”
+- **JDK 17+** (`backend/java-springboot` uses `./mvnw`; a real JDK is required—not the macOS `/usr/bin/java` stub). The verify script resolves **`JAVA_HOME`** via `java -version`, **`JAVA_HOME`**, **`/usr/libexec/java_home`**, **`/Library/Java/JavaVirtualMachines`**, and common Homebrew OpenJDK paths when `PATH` is wrong.
 - **Go 1.22+** on `PATH` (`backend/go-gin`)
 
-If a runtime is missing, the script **fails immediately** with a short list of what is not on `PATH` (no partial temp copies). To **skip** starters whose runtimes are missing (e.g. you do not have Go installed yet):
-
-```bash
-VERIFY_SKIP_MISSING_RUNTIMES=1 pnpm run verify:create-dflow-app
-# or
-pnpm --filter @dflow-starters/create-dflow-app exec node ./scripts/verify-starters.mjs --skip-missing-runtimes
-```
+**macOS (Homebrew) quick installs:** `brew install go` for Go. For a **real** JDK 17+, e.g. `brew install --cask temurin@17`, then confirm `java -version` in a new terminal, or rely on the script’s `JAVA_HOME` discovery above. ([Adoptium installs](https://adoptium.net/installation/).)
 
 ## References
 

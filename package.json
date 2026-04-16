@@ -9,7 +9,8 @@
     "validate:manifests:self-test": "pnpm --filter @dflow-starters/manifest-tools run self-test",
     "build:registry": "turbo run build-registry --filter=@dflow-starters/manifest-tools",
     "check:registry": "pnpm --filter @dflow-starters/manifest-tools run check-registry",
-    "verify:create-dflow-app": "pnpm --filter @dflow-starters/create-dflow-app run verify"
+    "verify:create-dflow-app": "pnpm --filter @dflow-starters/create-dflow-app run verify",
+    "verify:create-dflow-app:strict": "pnpm --filter @dflow-starters/create-dflow-app run verify:strict"
   },
   "devDependencies": {
     "turbo": "^2.5.0"

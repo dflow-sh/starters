@@ -3,10 +3,10 @@
  * Runs create-dflow-app for each registry starter (--source local repo), then
  * installCommand + buildCommand from dflow.template.json.
  *
- * Strict by default: fails fast if a required runtime binary is missing on PATH.
- * Opt-in: VERIFY_SKIP_MISSING_RUNTIMES=1 or --skip-missing-runtimes to skip those starters.
+ * Default: skip starters whose runtimes are missing (so `pnpm run verify:create-dflow-app` succeeds on partial dev machines).
+ * Full check: pass --strict or VERIFY_STRICT=1 (fail fast if any runtime is missing).
  */
-import { execSync, spawn } from "node:child_process";
+import { execFileSync, execSync, spawn } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -57,35 +57,144 @@ function javaRuntimeWorks() {
   }
 }
 
+/** @param {string} javaHome */
+function javaHomeWorks(javaHome) {
+  if (!javaHome) return false;
+  const jav = path.join(javaHome, "bin", "java");
+  try {
+    execFileSync(jav, ["-version"], { stdio: "ignore" });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** macOS: JDKs from Temurin/Oracle casks live here even when `java_home` is wrong. */
+function darwinScanLibraryJavaVirtualMachines() {
+  const root = "/Library/Java/JavaVirtualMachines";
+  if (!fs.existsSync(root)) return null;
+  const names = fs.readdirSync(root).filter((n) => n.endsWith(".jdk"));
+  names.sort((a, b) => b.localeCompare(a, "en"));
+  for (const name of names) {
+    const home = path.join(root, name, "Contents", "Home");
+    if (javaHomeWorks(home)) return home;
+  }
+  return null;
+}
+
+/** macOS: Homebrew `brew install openjdk@17` layout (not always registered with java_home). */
+function darwinHomebrewOpenjdkHomes() {
+  return [
+    "/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home",
+    "/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home",
+    "/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home",
+    "/usr/local/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home",
+    "/usr/local/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home",
+    "/usr/local/opt/openjdk/libexec/openjdk.jdk/Contents/Home",
+  ];
+}
+
+/**
+ * When PATH `java` is the macOS stub (or missing), find a JDK via JAVA_HOME,
+ * `/usr/libexec/java_home`, `/Library/Java/JavaVirtualMachines`, or Homebrew openjdk paths.
+ * @returns {string | null}
+ */
+function resolvedJavaHomeForVerify() {
+  if (javaRuntimeWorks()) return null;
+
+  const fromEnv = process.env.JAVA_HOME?.trim();
+  if (fromEnv && javaHomeWorks(fromEnv)) return path.resolve(fromEnv);
+
+  if (process.platform !== "darwin") return null;
+
+  const versions = ["17", "21", "11", ""];
+  for (const v of versions) {
+    try {
+      const args = v ? ["-v", v] : [];
+      const home = execFileSync("/usr/libexec/java_home", args, {
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "ignore"],
+      })
+        .trim()
+        .split("\n")[0]
+        ?.trim();
+      if (home && javaHomeWorks(home)) return home;
+    } catch {
+      // try next
+    }
+  }
+
+  const fromLibrary = darwinScanLibraryJavaVirtualMachines();
+  if (fromLibrary) return fromLibrary;
+
+  for (const h of darwinHomebrewOpenjdkHomes()) {
+    if (javaHomeWorks(h)) return path.resolve(h);
+  }
+
+  return null;
+}
+
 /**
  * @param {string | undefined} runtime
- * @returns {{ ok: boolean, missing: string[] }}
+ * @returns {{ ok: boolean, missing: string[], javaHome: string | null }}
  */
 function runtimeSatisfied(runtime) {
   const r = String(runtime || "").toLowerCase();
   if (r === "jvm" || r === "java") {
-    if (javaRuntimeWorks()) return { ok: true, missing: [] };
+    if (javaRuntimeWorks()) return { ok: true, missing: [], javaHome: null };
+    const home = resolvedJavaHomeForVerify();
+    if (home) return { ok: true, missing: [], javaHome: home };
     return {
       ok: false,
-      missing: ["java (JDK 17+; `java -version` must work — not the macOS stub)"],
+      missing: [
+        "java (JDK 17+; `java -version` must work — not the macOS stub; or set JAVA_HOME / install Temurin and retry)",
+      ],
+      javaHome: null,
     };
   }
 
   const cmds = requiredCommandsForRuntime(runtime);
-  if (!cmds) return { ok: true, missing: [] };
+  if (!cmds) return { ok: true, missing: [], javaHome: null };
   const missing = cmds.filter((c) => !commandOnPath(c));
-  return { ok: missing.length === 0, missing };
+  return { ok: missing.length === 0, missing, javaHome: null };
+}
+
+/** @param {string} preflightBody joined missing-runtime lines */
+function darwinInstallHints(preflightBody) {
+  if (process.platform !== "darwin") return [];
+  const hints = [];
+  if (preflightBody.includes("backend/go-gin")) {
+    hints.push("  macOS (Go):  brew install go");
+  }
+  if (preflightBody.includes("java (JDK")) {
+    hints.push(
+      "  macOS (JDK 17+):  brew install --cask temurin@17   # then open a NEW terminal and run: java -version"
+    );
+    hints.push(
+      "                    (verify also uses JAVA_HOME, java_home, /Library/Java/JavaVirtualMachines, Homebrew openjdk paths)"
+    );
+    hints.push(
+      "                    Still failing? Run:  /usr/libexec/java_home -V   and  ls /Library/Java/JavaVirtualMachines"
+    );
+  }
+  if (preflightBody.includes("python3")) {
+    hints.push("  macOS (Python 3):  brew install python@3.12   # or use https://www.python.org/downloads/");
+  }
+  return hints;
 }
 
 /**
  * @param {string} cwd
  * @param {string | string[]} command
  * @param {string} label
+ * @param {Record<string, string> | undefined} extraEnv merged over process.env for this step only
  */
-function runStep(cwd, command, label) {
+function runStep(cwd, command, label, extraEnv) {
   if (command === "" || (Array.isArray(command) && command.length === 0)) {
     return Promise.resolve();
   }
+
+  const env = extraEnv ? { ...process.env, ...extraEnv } : process.env;
 
   return new Promise((resolve, reject) => {
     /** @type {import('node:child_process').ChildProcess} */
@@ -94,14 +203,14 @@ function runStep(cwd, command, label) {
       child = spawn(command[0], command.slice(1), {
         cwd,
         stdio: "inherit",
-        env: process.env,
+        env,
         shell: false,
       });
     } else {
       child = spawn(command, {
         cwd,
         stdio: "inherit",
-        env: process.env,
+        env,
         shell: true,
       });
     }
@@ -133,10 +242,13 @@ function runNodeCli(args) {
 
 async function main() {
   const argv = process.argv.slice(2);
-  const skipMissing =
-    argv.includes("--skip-missing-runtimes") ||
-    process.env.VERIFY_SKIP_MISSING_RUNTIMES === "1" ||
-    process.env.VERIFY_SKIP_MISSING_RUNTIMES === "true";
+  const strict =
+    argv.includes("--strict") ||
+    process.env.VERIFY_STRICT === "1" ||
+    process.env.VERIFY_STRICT === "true";
+
+  /** Skip starters when a runtime is missing; strict requires every runtime. */
+  const skipMissing = !strict;
 
   const registry = loadRegistryFromFile(REPO_ROOT);
   if (!registry.starters.length) {
@@ -151,14 +263,18 @@ async function main() {
       if (!ok) lines.push(`  ${s.id}: missing on PATH → ${missing.join(", ")}`);
     }
     if (lines.length) {
+      const body = lines.join("\n");
+      const hints = darwinInstallHints(body);
       console.error(
         [
           "verify-starters: required runtimes are not on PATH:",
           ...lines,
           "",
-          "Install the missing tools (see packages/create-dflow-app/README.md), or re-run with:",
-          "  VERIFY_SKIP_MISSING_RUNTIMES=1 pnpm run verify:create-dflow-app",
-          "  pnpm --filter @dflow-starters/create-dflow-app exec node ./scripts/verify-starters.mjs --skip-missing-runtimes",
+          ...(hints.length ? ["Common installs:", ...hints, ""] : []),
+          "Install the missing tools (see packages/create-dflow-app/README.md).",
+          "Default verify skips missing runtimes; you used --strict (or VERIFY_STRICT=1).",
+          "To verify only starters this machine supports, run:",
+          "  pnpm run verify:create-dflow-app",
           "",
         ].join("\n")
       );
@@ -171,7 +287,7 @@ async function main() {
   let skipped = 0;
 
   for (const s of registry.starters) {
-    const { ok, missing } = runtimeSatisfied(s.manifest.runtime);
+    const { ok, missing, javaHome } = runtimeSatisfied(s.manifest.runtime);
     if (!ok) {
       if (!skipMissing) {
         console.error(`verify-starters: internal error — should have preflighted ${s.id}`);
@@ -189,8 +305,26 @@ async function main() {
     await runNodeCli([s.id, dest, "--source", REPO_ROOT]);
 
     const m = s.manifest;
-    await runStep(dest, /** @type {string | string[]} */ (m.installCommand), "install");
-    await runStep(dest, /** @type {string | string[]} */ (m.buildCommand), "build");
+    const jvmEnv =
+      javaHome && String(m.runtime || "").toLowerCase() === "jvm"
+        ? { JAVA_HOME: javaHome }
+        : undefined;
+    if (jvmEnv) {
+      console.log(`verify-starters: using JAVA_HOME=${javaHome} for Maven (PATH java not used)\n`);
+    }
+
+    await runStep(
+      dest,
+      /** @type {string | string[]} */ (m.installCommand),
+      "install",
+      jvmEnv
+    );
+    await runStep(
+      dest,
+      /** @type {string | string[]} */ (m.buildCommand),
+      "build",
+      jvmEnv
+    );
     console.log(`OK — ${s.id}`);
     passed += 1;
   }
