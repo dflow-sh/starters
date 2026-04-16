@@ -11,6 +11,7 @@ starters/
   frontend/
     react-vite/
     vue-vite/
+    angular/
   backend/
     python-fastapi/
     java-springboot/
@@ -54,7 +55,7 @@ We use `starters/` instead of `apps/` so this repo stays distinct from productio
 
 **Today:** clone this repository if you are contributing or inspecting templates. Copy the starter directory you need into your own project and follow that template’s `README` once published.
 
-**Scaffold:** run `pnpm exec create-dflow-app` from this repo (after `pnpm install`), or use `pnpm dlx` once the package is published. Examples and flags: [packages/create-dflow-app/README.md](./packages/create-dflow-app/README.md). Maintainer verification: `pnpm run verify:create-dflow-app` (requires JDK 17+, Go 1.22+, Python 3, and npm for the starter matrix).
+**Scaffold:** run `pnpm exec create-dflow-app` from this repo (after `pnpm install`), or use `pnpm dlx` once the package is published. Examples and flags: [packages/create-dflow-app/README.md](./packages/create-dflow-app/README.md). Maintainer verification: `pnpm run verify:create-dflow-app` (needs JDK 17+, Go 1.22+, Python 3, and npm on `PATH` for a full pass). Without Go (or another runtime), use `VERIFY_SKIP_MISSING_RUNTIMES=1 pnpm run verify:create-dflow-app` to skip those starters.
 
 **Deploy:** each starter ships a `dflow.template.json` manifest at its root. Spec and JSON Schema: [docs/manifest-v1.md](./docs/manifest-v1.md). End-to-end deploy walkthrough: [docs/deploy/dflow.md](./docs/deploy/dflow.md). Validate locally with `pnpm install` and `pnpm run validate:manifests`. Deploy through the dFlow app using your Git provider integration ([GitHub integration overview](https://docs.dflow.sh/articles/7377791-github-integration)).
 

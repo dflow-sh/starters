@@ -18,9 +18,12 @@ starters/
   frontend/
     react-vite/
     vue-vite/
+    angular/
   backend/
     python-fastapi/
     java-springboot/
+    go-gin/
+    node-express/
   fullstack/
     nextjs/
 packages/

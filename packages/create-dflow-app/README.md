@@ -82,8 +82,16 @@ This runs `create-dflow-app` for **each** catalog entry, then runs `installComma
 
 - **Node + npm** (e.g. `frontend/react-vite`, `backend/node-express`, `fullstack/nextjs`)
 - **Python 3 + pip** (`backend/python-fastapi`)
-- **JDK 17+** on `PATH` (`backend/java-springboot` uses the Maven Wrapper `./mvnw`; Java is still required)
+- **JDK 17+** on `PATH` (`backend/java-springboot` uses the Maven Wrapper `./mvnw`; a real JDK is still required). On macOS, `/usr/bin/java` can exist without a JDK; the verify script checks `java -version` so that stub does not count as “installed.”
 - **Go 1.22+** on `PATH` (`backend/go-gin`)
+
+If a runtime is missing, the script **fails immediately** with a short list of what is not on `PATH` (no partial temp copies). To **skip** starters whose runtimes are missing (e.g. you do not have Go installed yet):
+
+```bash
+VERIFY_SKIP_MISSING_RUNTIMES=1 pnpm run verify:create-dflow-app
+# or
+pnpm --filter @dflow-starters/create-dflow-app exec node ./scripts/verify-starters.mjs --skip-missing-runtimes
+```
 
 ## References
 
