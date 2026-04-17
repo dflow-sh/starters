@@ -8,7 +8,7 @@
   "runtime": "node",
   "installCommand": "npm install",
   "buildCommand": "npm run build",
-  "startCommand": "npm run preview -- --host 0.0.0.0 --port 4173",
+  "startCommand": "npm run preview -- --host 0.0.0.0 --port ${PORT:-4173}",
   "port": 4173,
   "healthCheck": {
     "type": "http",
