@@ -3,9 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "dev": "ng serve",
+    "start": "npm run preview",
     "build": "ng build",
-    "preview": "serve dist/angular/browser -l tcp://0.0.0.0:4173",
+    "preview": "serve dist/angular/browser -l tcp://0.0.0.0:${PORT:-4173}",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

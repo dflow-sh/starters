@@ -13,11 +13,11 @@ Angular 19 expects a supported Node release (see [Angular CLI prerequisites](htt
 ## Local development
 
 - Install: `npm ci` (or `npm install` when iterating locally without a strict lockfile)
-- Dev server (HMR): `npm start` (runs `ng serve`; default `http://localhost:4200/`)
+- Dev server (HMR): `npm run dev` (runs `ng serve`; default `http://localhost:4200/`)
 - Production build: `npm run build`
-- Preview the built app: `npm run preview` (serves `dist/angular/browser` on port **4173**)
+- Serve the built app (platform-style): `npm start` → `npm run preview` (binds `0.0.0.0`, port **`${PORT:-4173}`** so Heroku-style hosts work)
 
-The preview command matches the manifest `startCommand` and CI smoke check (port `4173`, health path `/`).
+The preview command matches the manifest `startCommand` and CI smoke check (default port **4173**, health path `/`).
 
 ## Deploying on dFlow
 

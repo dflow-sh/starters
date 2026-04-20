@@ -11,7 +11,7 @@ Minimal Next.js 15 + TypeScript app using the **App Router**. The home page sets
 - Install: `npm install` (first `next dev` or `next build` generates `next-env.d.ts`, which is gitignored like a standard Next.js app)
 - Dev server: `npm run dev` (default [http://localhost:3000](http://localhost:3000))
 - Production build: `npm run build`
-- Production server: `npm run start` (listens on `0.0.0.0:3000` as defined in `package.json`)
+- Production server: `npm run start` (binds `0.0.0.0`; port **`${PORT:-3000}`** so platforms that inject `PORT` work without edits)
 
 ## Health check
 
@@ -21,7 +21,7 @@ Minimal Next.js 15 + TypeScript app using the **App Router**. The home page sets
 
 Optional variables are listed in `dflow.template.json` under `env` (names and descriptions only — never commit real secrets).
 
-- **`PORT`** — Many platforms set this automatically. For a custom production start without editing `package.json`, use `next start -H 0.0.0.0` with `PORT` set instead of the fixed `-p 3000` script if your host requires it.
+- **`PORT`** — Many platforms set this automatically; the `start` script passes `-p ${PORT:-3000}` so the injected port is honored.
 - **`NEXT_TELEMETRY_DISABLED=1`** — Disable Next.js telemetry in CI (the GitHub Actions starter matrix sets this for `next build`).
 
 ## Deploying on dFlow
